@@ -108,7 +108,7 @@ class RealUciSetup(UciSetup):
             for line in file.readlines():
                 if not line or line.isspace():
                     continue
-                result += line.split('=', 1)
+                result += tuple(line.split('=', 1))
         return result
 
     def _safemkdir(self, directory):
