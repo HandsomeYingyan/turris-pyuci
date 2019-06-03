@@ -1,9 +1,6 @@
-import pytest
 import os
-import argparse
-import configparser
+import pytest
 from uci_monkey import *
-from itertools import tee
 
 
 def pytest_addoption(parser):
@@ -83,7 +80,6 @@ class RealUciSetup(UciSetup):
         self.tmpdir = tmpdir
 
     def set(self, config, content):
-        self.tmpdir.mkdir('conf')
         with self.tmpdir.join('conf', config).open("w") as file:
             for line in content:
                 if line[0] == "config":
@@ -114,11 +110,17 @@ class RealUciSetup(UciSetup):
                 result += line.split('=', 1)
         return result
 
+    def _safemkdir(self, directory):
+        pth = self.tmpdir.join(directory).strpath
+        if os.path.isdir(pth):
+            os.mkdir(pth)
+        return pth
+
     def confdir(self):
-        return self.tmpdir.mkdir('conf').strpath
+        return self._safemkdir('conf')
 
     def savedir(self):
-        return self.tmpdir.mkdir('save').strpath
+        return self._safemkdir('save')
 
 
 class FakeUciSetup(UciSetup):
