@@ -113,7 +113,7 @@ class RealUciSetup(UciSetup):
 
     def _safemkdir(self, directory):
         pth = self.tmpdir.join(directory).strpath
-        if os.path.isdir(pth):
+        if not os.path.isdir(pth):
             os.mkdir(pth)
         return pth
 
