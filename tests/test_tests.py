@@ -5,14 +5,14 @@ import pytest
 
 CONTENT_PARSED = (
     ("config", "testing", "testing"),
-    ("option", "zero", 0),
-    ("option", "one", 1),
+    ("option", "zero", '0'),
+    ("option", "one", '1'),
     ("config", "anonymous"),
     ("option", "password", "12345"),
     ("config", "testlist", "testlist"),
     ("list", "list1", "once"),
     ("list", "list1", "twice"),
-    ("list", "list2", 42),
+    ("list", "list2", "42"),
 )
 CONTENT_PLAIN = """
 config testing 'testing'
@@ -44,6 +44,7 @@ def test_setup_get(uci_setup):
     """
     uci_setup.tmpdir.mkdir('conf')
     uci_setup.tmpdir.join('conf', 'test').write(CONTENT_PLAIN)
+    print(CONTENT_PARSED)
     assert uci_setup.get('test') == CONTENT_PARSED
 
 

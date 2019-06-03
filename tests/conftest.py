@@ -99,7 +99,10 @@ class RealUciSetup(UciSetup):
             for line in file.readlines():
                 if not line or line.isspace():
                     continue
-                result += (tuple(line.split(maxsplit=2)),)
+                values = line.strip().split(maxsplit=2)
+                if len(values) > 2:
+                    values[2] = values[2][1:-1]  # Strip ''
+                result += (tuple(values),)
         return result
 
     def get_save(self, config):
@@ -108,7 +111,9 @@ class RealUciSetup(UciSetup):
             for line in file.readlines():
                 if not line or line.isspace():
                     continue
-                result += (tuple(line.split('=', 1)),)
+                option, value = line.strip().split('=', 1)
+                value = value[1:-1]  # Strip ''
+                result += ((option, value),)
         return result
 
     def _safemkdir(self, directory):
