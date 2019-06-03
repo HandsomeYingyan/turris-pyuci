@@ -32,7 +32,7 @@ def test_get(uci_setup):
 def test_set(uci_setup):
     'Test set method. This depends on working test_get.'
     uci_setup.set('test', ())
-    u = uci.Uci(savedir=uci_setup.savedir, confdir=uci_setup.confdir())
+    u = uci.Uci(savedir=uci_setup.savedir(), confdir=uci_setup.confdir())
     u.set('test', 'testing', 'testing')
     u.set('test', 'testing', 'variable', 'value')
     assert u.get('test', 'testing') == 'testing'
@@ -42,7 +42,7 @@ def test_set(uci_setup):
 def test_commit(uci_setup):
     'Test commit method. This depends on working test_set.'
     uci_setup.set('test', ())
-    u = uci.Uci(savedir=uci_setup.savedir, confdir=uci_setup.confdir())
+    u = uci.Uci(savedir=uci_setup.savedir(), confdir=uci_setup.confdir())
     u.set('test', 'testing', 'testing')
     u.set('test', 'testing', 'variable', 'value')
     assert uci_setup.get('test') == ()
