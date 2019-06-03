@@ -80,6 +80,7 @@ class RealUciSetup(UciSetup):
         self.tmpdir = tmpdir
 
     def set(self, config, content):
+        self._safemkdir('conf')
         with self.tmpdir.join('conf', config).open("w") as file:
             for line in content:
                 if line[0] == "config":

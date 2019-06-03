@@ -50,6 +50,7 @@ def test_setup_get(uci_setup):
 def test_setup_get_saved(uci_setup):
     """Test that uci setup can parse correctly saved files.
     """
+    uci_setup.tmpdir.mkdir('save')
     uci_setup.tmpdir.join('save', 'test').write('''test.testing="testing"
 test.testing.optimal="value"
 ''')
