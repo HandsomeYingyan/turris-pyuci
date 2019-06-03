@@ -150,6 +150,7 @@ def test_get_list(uci_setup):
     'Test get with list'
     uci_setup.set('test', (
         ("config", "testing", "testing"),
+        ("option", "option", "0"),
         ("list", "list", "0"),
         ("list", "list", "1"),
     ))
