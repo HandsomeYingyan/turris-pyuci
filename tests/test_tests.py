@@ -44,7 +44,6 @@ def test_setup_get(uci_setup):
     """
     uci_setup.tmpdir.mkdir('conf')
     uci_setup.tmpdir.join('conf', 'test').write(CONTENT_PLAIN)
-    print(CONTENT_PARSED)
     assert uci_setup.get('test') == CONTENT_PARSED
 
 

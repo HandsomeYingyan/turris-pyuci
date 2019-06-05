@@ -19,4 +19,7 @@ def fake_uci():
     """Fixture to provide you with faked uci state. You can use it to set and
     verify UCI state.
     """
-    yield
+    from . import guts
+    state = guts.UciState()
+    yield state
+    state.wipe()
