@@ -1,5 +1,6 @@
 """Unified configuration interface bindings
 """
+import collections
 import threading
 
 _state = None
@@ -22,11 +23,51 @@ class Uci():
             for config in self.list_configs():
                 self.commit(config)
 
+    def _option(self, value):
+        if isinstance(value, collections.Iterable) and not isinstance(value, str):
+            return tuple(str(el) for el in value)
+        return str(value)
+
+    def _section(self, section):
+        result = {}
+        for name, value in section.items():
+            result[str(name)] = self._option(value)
+        return result
+
+    def _package(self, package):
+        result = {}
+        for name, value in package.items():
+            result[name] = self._section(value)
+        return result
+
+    def _lookup(self, *args):
+        handler = {
+            1: lambda: _state[args[0]],
+            2: lambda: _state[args[0]][args[1]],
+            3: lambda: _state[args[0]][args[1]][args[2]],
+        }
+        if len(args) not in handler:
+            # TODO match exception with Uci one
+            raise Exception("Invalid number of arguments")
+        # TODO check if every level has appropriate field
+        return handler[len]()
+
+    def _get(self, all, *args):
+        itm = self._lookup(args)
+        if len(args) == 2 and not all:
+            return str(itm.type())
+        handler = {
+            1: self._package,
+            2: self._section,
+            3: self._option
+        }
+        return handler[len(args)](*args)
+
     def get(self, *args):
-        raise NotImplementedError
+        return self._get(False, *args)
 
     def get_all(self, *args):
-        raise NotImplementedError
+        return self._get(True, *args)
 
     def set(self, *args):
         self.tainted = True
