@@ -4,11 +4,9 @@ configuration representation.
 import re
 import collections
 import threading
-from copy import copy
-from . import uci
 
 
-class UciDir(dict):
+class UciDir(collections.OrderedDict):
     """UCI configuration state. It allows you to overly and in general
     manage current UCI configuration. Just instanciate it to create new state
     overlay. To drop it you call drop().
@@ -35,6 +33,28 @@ class UciDir(dict):
             super().__setitem__(key, list(value))
         else:
             super().__setitem__(key, str(value))
+        self.sort()
+
+    def iterfilter(self, key):
+        """Returns generator to go trough all subsequent sections"""
+        returned = set()
+        for kkey in self:
+            if kkey.startswith(key + '.'):
+                kkey_tail = kkey[len(key) + 1:]  # TODO strip rest
+                returned.add(kkey_tail)
+                yield kkey_tail
+
+    def sections(self, config, type):
+        """Generator to iterate over all sections of given type"""
+        raise NotImplementedError
+
+    def sort(self):
+        """Resort current content (sections in configs)"""
+        raise NotImplementedError
+
+    def section_move(self, config, section, position):
+        """Move specified section to more appropriate place"""
+        raise NotImplementedError
 
 
 class UciState(dict):

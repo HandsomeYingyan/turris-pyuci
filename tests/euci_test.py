@@ -17,6 +17,8 @@
 import pytest
 import euci
 
+pytestmark = pytest.mark.uci_real  # TODO for now
+
 
 def test_get_string(uci_setup):
     'Test get for no dtype (string in default)'
