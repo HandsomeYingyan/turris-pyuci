@@ -6,20 +6,18 @@ import collections
 import threading
 
 
-class UciDir(collections.OrderedDict):
+class UciDir:
     """UCI configuration state. It allows you to overly and in general
     manage current UCI configuration. Just instanciate it to create new state
     overlay. To drop it you call drop().
     Note that states automatically create linked-list chain.
     """
+    # Internal structure of conf:
 
-    def __init__(self, *args, **kwargs):
-        self.lock = threading.Lock()
-        self._re_option = re.compile(r'\w+')
-        self._re_section = re.compile(r'\w+|@\w+\[\d+\]')
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        self.conf = collections.OrderedDict()
 
-    def __setitem__(self, key, value):
+    def __validate_key(self, key):
         pkey = key.split('.')
         if not 2 <= len(pkey) <= 3:
             raise InvalidUciSpecException("Only allowed keys are of form: config.section[.option]")
@@ -29,11 +27,20 @@ class UciDir(collections.OrderedDict):
             raise InvalidUciSpecException("Section 'section' does not conform to appropriate format")
         if len(pkey) == 3 and not self._re_option.fullmatch(pkey[2]):
             raise InvalidUciSpecException("Section 'option' does not conform to appropriate format")
+        return pkey
+
+    def __getitem__(self, key):
+        # TODO
+        pass
+
+    def __setitem__(self, key, value):
+        pkey = self.__validate_key(key)
         if len(pkey) == 3 and isinstance(value, collections.Iterable) and not isinstance(value, str):
-            super().__setitem__(key, list(value))
-        else:
-            super().__setitem__(key, str(value))
-        self.sort()
+            pass
+
+    def __delitem__(self, key):
+        # TODO
+        pass
 
     def iterfilter(self, key):
         """Returns generator to go trough all subsequent sections"""
@@ -56,12 +63,15 @@ class UciDir(collections.OrderedDict):
         """Move specified section to more appropriate place"""
         raise NotImplementedError
 
+    def merge(dir: UciDir):
+        """Merge other UciDir instance to this one.
+        """
+        raise NotImplementedError
+
 
 class UciState(dict):
-    """UCI configuration state. It allows you to overly and in general
-    manage current UCI configuration. Just instanciate it to create new state
-    overlay. To drop it you call drop().
-    Note that states automatically create linked-list chain.
+    """UCI configuration state. It allows you to overly and in general manage current UCI configuration. Just
+    instanciate it to create new state overlay. To drop it you call drop().
     """
 
     def __setitem__(self, path, value):

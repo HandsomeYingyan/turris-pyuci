@@ -42,7 +42,7 @@ class Uci():
         if argc == 1:
             # TODO go trough all sections in config
             raise NotImplementedError
-        elif args == 2:
+        if args == 2:
             if section_value:
                 path = self._path(*args)
             else:
